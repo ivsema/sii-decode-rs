@@ -7,7 +7,7 @@ import topLevelAwait from "vite-plugin-top-level-await";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), wasm(), topLevelAwait()],
-  base: "sii-decode-rs",
+  base: "/sii-decode-rs",
   worker: {
     format: "es",
     plugins: () => [wasm()],
