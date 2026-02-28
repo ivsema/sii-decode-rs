@@ -12,7 +12,6 @@ type PreparedBlockInfo = {
 };
 
 
-
 function App() {
   const [file, setFile] = useState<File | null>(null);
   //const [cleanField, setCleanField] = useState(""); // для ввода имени поля
