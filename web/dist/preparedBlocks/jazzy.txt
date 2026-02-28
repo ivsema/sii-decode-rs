@@ -1,0 +1,4 @@
+active_mods: 3
+ active_mods[0]: "mod_1|Mod 1"
+ active_mods[1]: "mod_two|Mod Two"
+ active_mods[2]: "mod_three|Mod Three"
