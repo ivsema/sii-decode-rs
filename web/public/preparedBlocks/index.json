@@ -1,0 +1,16 @@
+[
+  {
+    "id": "default",
+    "name": "Default Map",
+    "file": "default.txt",
+    "map_path": "/map/europe.mbd",
+    "description": "Чистая карта без модов."
+  },
+  {
+    "id": "promods",
+    "name": "ProMods",
+    "file": "promods.txt",
+    "map_path": "/map/europe.mbd",
+    "description": "Карта с модами."
+  }
+]

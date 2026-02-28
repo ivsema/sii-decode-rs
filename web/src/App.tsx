@@ -3,32 +3,92 @@ import "./App.css";
 import DecodeWorker from "./decode.worker?worker";
 import type { DecodeResponse } from "./decode.worker";
 
+
+type PreparedBlockInfo = {
+  id: string;
+  name: string;
+  file: string;
+  map_path: string;
+};
+
+
+
 function App() {
   const [file, setFile] = useState<File | null>(null);
+  //const [cleanField, setCleanField] = useState(""); // для ввода имени поля
+  const [decodedText, setDecodedText] = useState(""); // для хранения декодированного текста
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const workerRef = useRef<Worker | null>(null);
-
-  // Initialize worker
+  const [preparedBlocks, setPreparedBlocks] = useState<PreparedBlockInfo[]>([]);
+  const [selectedBlockFile, setSelectedBlockFile] = useState<string>("");
+  // Инициализация воркера
   useEffect(() => {
     workerRef.current = new DecodeWorker();
     return () => {
       workerRef.current?.terminate();
     };
   }, []);
+  
+useEffect(() => {
+  const controller = new AbortController();
 
+  const load = async () => {
+    try {
+      const BASE = import.meta.env.BASE_URL;
+
+      const res = await fetch(`${BASE}preparedBlocks/index.json`, {
+        cache: "no-store",
+        signal: controller.signal,
+      });
+
+      if (!res.ok) {
+        console.error("Failed to load index.json:", res.status);
+        return;
+      }
+
+      const list: PreparedBlockInfo[] = await res.json();
+
+      console.log("Loaded preparedBlocks:", list);
+
+      setPreparedBlocks(list);
+
+      if (list.length > 0) {
+        setSelectedBlockFile(list[0].file);
+      }
+    } catch (err: any) {
+      if (err.name === "AbortError") {
+        // это нормально при StrictMode
+        return;
+      }
+      console.error("Load error:", err);
+    }
+  };
+
+  load();
+
+  return () => {
+    controller.abort(); // корректно отменяет первый вызов StrictMode
+  };
+}, []);
+
+	const extractMapPath = (content: string): string | null => {
+	  const match = content.match(/map_path:\s*"([^"]+)"/);
+	  return match ? match[1] : null;
+	};
+
+  // Обработка выбора файла
   const handleFile = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       if (!event.target.files || event.target.files.length === 0) {
         return;
       }
       const selectedFile = event.target.files[0];
+
       if (textAreaRef.current) {
-        // Clear the text area
         textAreaRef.current.value = "Decoding...";
       }
       if (downloadRef.current) {
-        // Clear the download link
         if (downloadRef.current.href !== "#") {
           URL.revokeObjectURL(downloadRef.current.href);
         }
@@ -36,21 +96,20 @@ function App() {
       }
       setFile(selectedFile);
     },
-    [setFile, textAreaRef, downloadRef],
+    []
   );
 
+  // Обработка декодирования файла
   useEffect(() => {
-    if (!file || !workerRef.current) {
-      return;
-    }
+    if (!file || !workerRef.current) return;
 
     const worker = workerRef.current;
 
     const handleMessage = (event: MessageEvent<DecodeResponse>) => {
       if (event.data.type === "success") {
         const { result, blobUrl } = event.data;
+        setDecodedText(result);
         if (textAreaRef.current) {
-          // Only show preview for large files to avoid UI freeze
           const PREVIEW_LIMIT = 100_000;
           if (result.length > PREVIEW_LIMIT) {
             textAreaRef.current.value =
@@ -64,7 +123,7 @@ function App() {
           downloadRef.current.href = blobUrl;
           downloadRef.current.download = file.name.replace(
             ".sii",
-            "-decoded.sii",
+            "-decoded.sii"
           );
         }
       } else if (event.data.type === "error") {
@@ -79,10 +138,7 @@ function App() {
     const reader = new FileReader();
     reader.onload = (e) => {
       const arrayBuffer = e.target?.result as ArrayBuffer;
-      // Transfer the buffer instead of copying
-      worker.postMessage({ type: "decode", buffer: arrayBuffer }, [
-        arrayBuffer,
-      ]);
+      worker.postMessage({ type: "decode", buffer: arrayBuffer }, [arrayBuffer]);
     };
     reader.readAsArrayBuffer(file);
 
@@ -90,34 +146,170 @@ function App() {
       worker.removeEventListener("message", handleMessage);
     };
   }, [file]);
+  
+	const BASE = import.meta.env.BASE_URL;
+
+	/*const loadPreparedBlocksList = async (): Promise<PreparedBlockInfo[]> => {
+	  //const BASE = import.meta.env.BASE_URL;
+
+	  const url = `${BASE}preparedBlocks/index.json`;
+	  console.log("Loading:", url);
+
+	  const res =  fetch(url, { cache: "no-store" });
+
+	  console.log("Response:", res);
+
+	  const text =  res.text();
+	  console.log("RAW index.json:", text);
+
+	  const json = JSON.parse(text);
+	  console.log("PARSED:", json);
+
+	  return json;
+	};*/
+
+	const loadPreparedBlock = async (file: string): Promise<string> => {
+	  const res = await fetch(`${BASE}preparedBlocks/${file}`, {
+		cache: "no-store",
+	  });
+
+	  if (!res.ok) {
+		throw new Error(`Cannot load ${file}`);
+	  }
+
+	  return await res.text();
+	};
+	
+	const validatePreparedBlock = (text: string): string | null => {
+	  // Ищем начало блока active_mods
+	  const headerMatch = text.match(/^active_mods:\s*\d+/m);
+	  if (!headerMatch) {
+		return "В шаблоне отсутствует строка 'active_mods: N'";
+	  }
+
+	  // Проверяем что есть хотя бы один элемент active_mods[i]
+	  const itemsMatch = text.match(/^\s*active_mods\[\d+\]:\s*".*?"$/m);
+	  if (!itemsMatch) {
+		return "В шаблоне нет ни одной строки active_mods[i]";
+	  }
+
+	  // Дополнительно убеждаемся, что файл НЕ содержит ничего лишнего до блока
+	  const firstNonEmpty = text.split(/\r?\n/).find(l => l.trim().length > 0);
+	  if (!firstNonEmpty?.startsWith("active_mods:")) {
+		return "Файл должен начинаться с active_mods";
+	  }
+
+	  return null; // всё ок
+	};
+
+  const handleCleanField = async () => {
+    if (!decodedText || !selectedBlockFile.trim()) return;
+
+    const selectedInfo = preparedBlocks.find(
+      (b) => b.file === selectedBlockFile
+    );
+    if (!selectedInfo) {
+      alert("Шаблон не найден");
+      return;
+    }
+	
+    const profileMapPath = extractMapPath(decodedText);
+
+    if (!profileMapPath) {
+      alert("В профиле не найден map_path");
+      return;
+    }
+
+    if (profileMapPath !== selectedInfo.map_path) {
+      alert(
+        `map_path не совпадает!\n\nПрофиль: ${profileMapPath}\nШаблон: ${selectedInfo.map_path}`
+      );
+      return;
+    }
+
+    // ✔ map_path совпал — можно применять
+    const preparedBlock = await loadPreparedBlock(selectedBlockFile);
+	
+	const validationError = validatePreparedBlock(preparedBlock);
+	if (validationError) {
+	  alert(`Ошибка preparedBlock:\n${validationError}`);
+	  return;
+	}
+
+const newContent = decodedText
+	.replace(
+    /active_mods:\s*\d+[\r\n]+(?:\s*active_mods\[\d+\]:\s*".*?"[\r\n]+)*/g,
+    preparedBlock
+  );
+
+    // Обновляем отображение и ссылку на скачивание
+    setDecodedText(newContent);
+
+    // Создаем новый Blob и URL
+    const blob = new Blob([newContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    if (downloadRef.current) {
+      if (downloadRef.current.href && downloadRef.current.href !== "#") {
+        URL.revokeObjectURL(downloadRef.current.href);
+      }
+      downloadRef.current.href = url;
+      downloadRef.current.download = file?.name ?? "profile.sii";
+    }
+  };
 
   return (
     <>
       <h1>SII Decode</h1>
-      <p>Select a SII file to decode</p>
-      <div>
-        <input
-          type="file"
-          id="file"
-          data-testid="file-upload"
-          onChange={handleFile}
-        />
+      
+      {/* Загрузка файла */}
+      <input
+        type="file"
+        accept=".sii"
+        onChange={handleFile}
+        style={{ marginBottom: '10px' }}
+      />
+
+      {/* Ввод имени поля для удаления */}
+      <div style={{ marginTop: '20px' }}>
+		<div style={{ marginBottom: "10px" }}>
+		  <label>Шаблон active_mods: </label>
+		  <select
+			value={selectedBlockFile}
+			onChange={(e) => setSelectedBlockFile(e.target.value)}
+			style={{ marginLeft: "10px" }}
+		  >
+			{preparedBlocks.map(b => (
+			  <option key={b.id} value={b.file}>
+				{b.name}
+			  </option>
+			))}
+		  </select>
+		</div>
+        <button onClick={handleCleanField} style={{ marginLeft: '10px' }}>
+          Применить
+        </button>
       </div>
-      <br />
+
+      {/* Отображение результата */}
       <textarea
         id="output"
         rows={20}
         cols={50}
         ref={textAreaRef}
+        value={decodedText}
         data-testid="file-display"
         spellCheck="false"
         readOnly
+        style={{ marginTop: '10px' }}
       />
-      <div>
+
+      {/* Ссылка для скачивания */}
+      <div style={{ marginTop: '10px' }}>
         <a href="#" ref={downloadRef} data-testid="file-download">
-          Download decoded file
+          Скачать декодированный файл
         </a>
       </div>
+      
       <p className="footer">
         Your file is not uploaded to any server, it is decoded using your own
         browser.
