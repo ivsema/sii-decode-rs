@@ -37,7 +37,7 @@ useEffect(() => {
     try {
       const BASE = import.meta.env.BASE_URL;
 
-      const res = await fetch(`${BASE}preparedBlocks/index.json`, {
+      const res = await fetch(`${BASE}/preparedBlocks/index.json`, {
         cache: "no-store",
         signal: controller.signal,
       });
@@ -152,7 +152,7 @@ useEffect(() => {
 	/*const loadPreparedBlocksList = async (): Promise<PreparedBlockInfo[]> => {
 	  //const BASE = import.meta.env.BASE_URL;
 
-	  const url = `${BASE}preparedBlocks/index.json`;
+	  const url = `${BASE}/preparedBlocks/index.json`;
 	  console.log("Loading:", url);
 
 	  const res =  fetch(url, { cache: "no-store" });
@@ -169,7 +169,7 @@ useEffect(() => {
 	};*/
 
 	const loadPreparedBlock = async (file: string): Promise<string> => {
-	  const res = await fetch(`${BASE}preparedBlocks/${file}`, {
+	  const res = await fetch(`${BASE}/preparedBlocks/${file}`, {
 		cache: "no-store",
 	  });
 

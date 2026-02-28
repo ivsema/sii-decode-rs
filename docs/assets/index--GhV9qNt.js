@@ -7172,7 +7172,7 @@ function Qy() {
     const V = new AbortController();
     return (async () => {
       try {
-        const sl = await fetch("/sii-decode-rspreparedBlocks/index.json", { cache: "no-store", signal: V.signal });
+        const sl = await fetch("/sii-decode-rs/preparedBlocks/index.json", { cache: "no-store", signal: V.signal });
         if (!sl.ok) {
           console.error("Failed to load index.json:", sl.status);
           return;
@@ -7216,7 +7216,7 @@ function Qy() {
     };
   }, [M]);
   const Rl = "/sii-decode-rs", pl = async (V) => {
-    const il = await fetch(`${Rl}preparedBlocks/${V}`, { cache: "no-store" });
+    const il = await fetch(`${Rl}/preparedBlocks/${V}`, { cache: "no-store" });
     if (!il.ok) throw new Error(`Cannot load ${V}`);
     return await il.text();
   }, $l = (V) => {
