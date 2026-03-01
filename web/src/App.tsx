@@ -7,6 +7,7 @@ import type { DecodeResponse } from "./decode.worker";
 type PreparedBlockInfo = {
   id: string;
   name: string;
+  description: string; 
   file: string;
   map_path: string;
 };
@@ -21,6 +22,11 @@ function App() {
   const workerRef = useRef<Worker | null>(null);
   const [preparedBlocks, setPreparedBlocks] = useState<PreparedBlockInfo[]>([]);
   const [selectedBlockFile, setSelectedBlockFile] = useState<string>("");
+  
+  const selectedTemplate = preparedBlocks.find(
+  (b) => b.file === selectedBlockFile
+);
+
   // Инициализация воркера
   useEffect(() => {
     workerRef.current = new DecodeWorker();
@@ -34,12 +40,12 @@ useEffect(() => {
 
   const load = async () => {
     try {
-      const BASE = import.meta.env.BASE_URL;
+		const url = new URL("preparedBlocks/index.json", document.baseURI);
 
-      const res = await fetch(`${BASE}/preparedBlocks/index.json`, {
-        cache: "no-store",
-        signal: controller.signal
-      });
+		const res = await fetch(url, {
+		  cache: "no-store",
+		  signal: controller.signal
+		});
 
       if (!res.ok) {
         console.error("Failed to load index.json:", res.status);
@@ -146,7 +152,7 @@ useEffect(() => {
     };
   }, [file]);
   
-	const BASE = import.meta.env.BASE_URL;
+	
 
 	/*const loadPreparedBlocksList = async (): Promise<PreparedBlockInfo[]> => {
 	  //const BASE = import.meta.env.BASE_URL;
@@ -168,9 +174,11 @@ useEffect(() => {
 	};*/
 
 	const loadPreparedBlock = async (file: string): Promise<string> => {
-	  const res = await fetch(`${BASE}/preparedBlocks/${file}`, {
-		cache: "no-store",
-	  });
+	  
+	  		const url = new URL(`preparedBlocks/${file}`, document.baseURI);
+		const res = await fetch(url, {
+		  cache: "no-store"
+		});
 
 	  if (!res.ok) {
 		throw new Error(`Cannot load ${file}`);
@@ -244,6 +252,7 @@ useEffect(() => {
 	  alert(`Ошибка preparedBlock:\n${validationError}`);
 	  return;
 	}
+	
 
 const newContent = decodedText
 	.replace(
@@ -294,6 +303,18 @@ const newContent = decodedText
 			))}
 		  </select>
 		</div>
+		{selectedTemplate && (
+		  <div
+			style={{
+			  marginTop: "6px",
+			  fontSize: "0.9em",
+			  color: "#666",
+			  maxWidth: "500px",
+			}}
+		  >
+			{selectedTemplate.description}
+		  </div>
+		)}
         <button onClick={handleCleanField} style={{ marginLeft: '10px' }}>
           Применить
         </button>
