@@ -24,6 +24,7 @@ function App() {
   const [status, setStatus] = useState<string>("Загрузите свой профиль");
   const [statusType, setStatusType] = useState<"info" | "success" | "error">("info");
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>("");
+  const [isReadyToDownload, setIsReadyToDownload] = useState(false);
   
 const selectedTemplate =  preparedBlocks.find((b) => b.id === selectedTemplateId) ?? null;
 
@@ -34,6 +35,20 @@ const selectedTemplate =  preparedBlocks.find((b) => b.id === selectedTemplateId
       workerRef.current?.terminate();
     };
   }, []);
+  
+  useEffect(() => {
+  if (!selectedTemplateId) return;
+
+  // Это выполнится КАЖДЫЙ раз при изменении выбранного шаблона
+  setIsReadyToDownload(false);
+
+  if (downloadRef.current?.href && downloadRef.current.href !== "#") {
+    URL.revokeObjectURL(downloadRef.current.href);
+    downloadRef.current.href = "#";
+  }
+
+  updateStatus("Шаблон изменён. Требуется повторное применение.");
+}, [selectedTemplateId]);
   
 useEffect(() => {
   const controller = new AbortController();
@@ -89,6 +104,7 @@ useEffect(() => {
         return;
       }
       const selectedFile = event.target.files[0];
+	  setIsReadyToDownload(false);
 
       if (textAreaRef.current) {
         textAreaRef.current.value = "Decoding...";
@@ -271,6 +287,7 @@ const newContent = decodedText
     // Создаем новый Blob и URL
     const blob = new Blob([newContent], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
+	setIsReadyToDownload(true);
     if (downloadRef.current) {
       if (downloadRef.current.href && downloadRef.current.href !== "#") {
         URL.revokeObjectURL(downloadRef.current.href);
@@ -362,8 +379,12 @@ const newContent = decodedText
       />
 
       {/* Ссылка для скачивания */}
+	  
       <div style={{ marginTop: '10px' }}>
-        <a href="#" ref={downloadRef} data-testid="file-download">
+        <a href="#" ref={downloadRef} data-testid="file-download"  
+		style={{
+		  display: isReadyToDownload ? "inline" : "none",
+		}}>
           Скачать профиль
         </a>
       </div>
