@@ -179,26 +179,36 @@ useEffect(() => {
 	  return await res.text();
 	};
 	
-	const validatePreparedBlock = (text: string): string | null => {
-	  // Ищем начало блока active_mods
-	  const headerMatch = text.match(/active_mods:\s*\d+/m);
-	  if (!headerMatch) {
-		return "В шаблоне отсутствует строка 'active_mods: N'";
+	const validatePreparedBlock = (rawText: string): string | null => {
+	  if (!rawText) {
+		return "Файл шаблона пуст";
 	  }
 
-	  // Проверяем что есть хотя бы один элемент active_mods[i]
-	  const itemsMatch = text.match(/\s*active_mods\[\d+\]:\s*".*?"$/m);
-	  if (!itemsMatch) {
-		return "В шаблоне нет ни одной строки active_mods[i]";
+	  // Убираем BOM (часто появляется из Notepad)
+	  const text = rawText.replace(/^\uFEFF/, "");
+
+	  // Разбиваем на строки
+	  const lines = text.split(/\r?\n/);
+
+	  // Ищем первую НЕ пустую строку
+	  const firstMeaningfulLine = lines.find((l) => l.trim().length > 0);
+
+	  if (!firstMeaningfulLine) {
+		return "Файл не содержит данных";
 	  }
 
-	  // Дополнительно убеждаемся, что файл НЕ содержит ничего лишнего до блока
-	  const firstNonEmpty = text.split(/\r?\n/).find(l => l.trim().length > 0);
-	  if (!firstNonEmpty?.startsWith("active_mods:")) {
-		return "Файл должен начинаться с active_mods";
+	  // Проверяем заголовок active_mods (разрешаем пробелы в начале)
+	  if (!/^\s*active_mods:\s*\d+/.test(firstMeaningfulLine)) {
+		return "Первая содержательная строка должна быть 'active_mods: N'";
 	  }
 
-	  return null; // всё ок
+	  // Проверяем наличие элементов списка
+	  const hasItems = /^\s*active_mods\[\d+\]:\s*".*?"$/m.test(text);
+	  if (!hasItems) {
+		return "В шаблоне отсутствуют строки active_mods[i]";
+	  }
+
+	  return null;
 	};
 
   const handleCleanField = async () => {
