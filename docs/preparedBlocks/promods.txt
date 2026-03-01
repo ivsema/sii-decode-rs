@@ -1,0 +1,9 @@
+ active_mods: 8
+ active_mods[0]: "promods-eu-dlcsupport-v281|ProMods DLC Support Package"
+ active_mods[1]: "promods-eu-model3-v281|ProMods Models Package 3"
+ active_mods[2]: "promods-eu-model2-v281|ProMods Models Package 2"
+ active_mods[3]: "promods-eu-model1-v281|ProMods Models Package 1"
+ active_mods[4]: "promods-eu-media-v281|ProMods Media Package"
+ active_mods[5]: "promods-eu-map-v281|ProMods Map Package"
+ active_mods[6]: "promods-eu-assets-v281|ProMods Assets Package"
+ active_mods[7]: "promods-eu-def-v281|ProMods Definition Package"

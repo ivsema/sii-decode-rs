@@ -4,7 +4,7 @@
     "name": "Default Map",
     "file": "default.txt",
     "map_path": "/map/europe.mbd",
-    "description": "Чистая карта без модов."
+    "description": "Демонстрация ошибки при пустом пресете"
   },
   {
     "id": "promods",
@@ -12,5 +12,12 @@
     "file": "promods.txt",
     "map_path": "/map/europe.mbd",
     "description": "Карта с модами."
+  },
+  {
+    "id": "ATS",
+    "name": "ATS",
+    "file": "ATS.txt",
+    "map_path": "/map/usa.mbd",
+    "description": "Карта с модами для ATS."
   }
 ]
