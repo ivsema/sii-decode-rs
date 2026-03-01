@@ -188,7 +188,8 @@ useEffect(() => {
 		});
 
 	  if (!res.ok) {
-		throw new Error(`Cannot load ${file}`);
+		throw new Error(`Не возможно загрузить шаблон ${file}`);
+		updateStatus(`Не возможно загрузить шаблон ${file}`, "error");
 	  }
 
 	  return await res.text();
@@ -368,7 +369,9 @@ const newContent = decodedText
       </div>
       
       <p className="footer">
-        Ваш профиль не загружается ни на какой сервер, все изменения выполяются в вашем браузере.<br/> Но не изменяют выбраный вами профиль, а лиш предлагает скачать измененную версию.
+        Ваш профиль не загружается ни на какой сервер, все изменения выполяются в вашем браузере.
+		<br/> 
+		Но не изменяют выбраный вами профиль, а лиш предлагает скачать измененную версию.
         <br />
         This tools is{" "}
         <a href="https://github.com/ivsema/sii-decode-rs">open source</a>.
