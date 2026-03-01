@@ -251,7 +251,7 @@ useEffect(() => {
 	
 	const validationError = validatePreparedBlock(preparedBlock);
 	if (validationError) {
-	  alert(`Ошибка preparedBlock:\n${validationError}`);
+	  updateStatus(`Ошибка preparedBlock:\n${validationError}`, "error");
 	  return;
 	}
 	
