@@ -21,7 +21,8 @@ function App() {
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const workerRef = useRef<Worker | null>(null);
   const [preparedBlocks, setPreparedBlocks] = useState<PreparedBlockInfo[]>([]);
-  //const [selectedBlockFile, setSelectedBlockFile] = useState<string>("");
+  const [status, setStatus] = useState<string>("Загрузите свой профиль");
+  const [statusType, setStatusType] = useState<"info" | "success" | "error">("info");
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>("");
   
 const selectedTemplate =  preparedBlocks.find((b) => b.id === selectedTemplateId) ?? null;
@@ -91,6 +92,7 @@ useEffect(() => {
 
       if (textAreaRef.current) {
         textAreaRef.current.value = "Decoding...";
+		updateStatus("Декодирование профиля...");
       }
       if (downloadRef.current) {
         if (downloadRef.current.href !== "#") {
@@ -130,7 +132,9 @@ useEffect(() => {
             "-decoded.sii"
           );
         }
+		updateStatus("Профиль успешно загружен. \n Выберете шаблон и нажмите применить.", "success");
       } else if (event.data.type === "error") {
+	    updateStatus(`Ошибка декодирования: ${event.data.message}`, "error");
         if (textAreaRef.current) {
           textAreaRef.current.value = `Error: ${event.data.message}`;
         }
@@ -151,7 +155,11 @@ useEffect(() => {
     };
   }, [file]);
   
-	
+	const updateStatus = (text: string, type: "info" | "success" | "error" = "info") => {
+	  setStatus(text);
+	  setStatusType(type);
+	};	
+
 
 	/*const loadPreparedBlocksList = async (): Promise<PreparedBlockInfo[]> => {
 	  //const BASE = import.meta.env.BASE_URL;
@@ -226,13 +234,14 @@ useEffect(() => {
     const profileMapPath = extractMapPath(decodedText);
 
     if (!profileMapPath) {
-      alert("В профиле не найден map_path");
+      updateStatus("В профиле не найден map_path", "error");
       return;
     }
 
     if (profileMapPath !== selectedTemplate.map_path) {
-      alert(
-        `map_path не совпадает!\n\nПрофиль: ${profileMapPath}\nШаблон: ${selectedTemplate.map_path}`
+      updateStatus(
+        `map_path не совпадает!\n\nПрофиль: ${profileMapPath}\nШаблон: ${selectedTemplate.map_path}`,
+		"error"
       );
       return;
     }
@@ -245,6 +254,7 @@ useEffect(() => {
 	  alert(`Ошибка preparedBlock:\n${validationError}`);
 	  return;
 	}
+	
 
 	
 
@@ -256,7 +266,7 @@ const newContent = decodedText
 
     // Обновляем отображение и ссылку на скачивание
     setDecodedText(newContent);
-
+	updateStatus('Моды успешно выставлены в профиль.\r\nПрофиль можно скачать по ссылке ниже', "success");
     // Создаем новый Blob и URL
     const blob = new Blob([newContent], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -313,7 +323,30 @@ const newContent = decodedText
           Применить
         </button>
       </div>
-
+		<div
+		  style={{
+			marginTop: "15px",
+			padding: "8px 12px",
+			borderRadius: "6px",
+			background:
+			  statusType === "error"
+				? "#ffe5e5"
+				: statusType === "success"
+				? "#e6ffed"
+				: "#f3f3f3",
+			color:
+			  statusType === "error"
+				? "#a40000"
+				: statusType === "success"
+				? "#1a7f37"
+				: "#333",
+			fontSize: "0.9em",
+			border: "1px solid #ddd",
+			whiteSpace: "pre-line"
+		  }}
+		>
+		  <strong>Статус:</strong> {status}
+		</div>
       {/* Отображение результата */}
       <textarea
         id="output"
@@ -330,18 +363,17 @@ const newContent = decodedText
       {/* Ссылка для скачивания */}
       <div style={{ marginTop: '10px' }}>
         <a href="#" ref={downloadRef} data-testid="file-download">
-          Скачать декодированный файл
+          Скачать профиль
         </a>
       </div>
       
       <p className="footer">
-        Your file is not uploaded to any server, it is decoded using your own
-        browser.
+        Ваш профиль не загружается ни на какой сервер, все изменения выполяются в вашем браузере.<br/> Но не изменяют выбраный вами профиль, а лиш предлагает скачать измененную версию.
         <br />
         This tools is{" "}
-        <a href="https://github.com/fangyi-zhou/sii-decode-rs/">open source</a>.
+        <a href="https://github.com/ivsema/sii-decode-rs">open source</a>.
         If you encounter any issues, please report them{" "}
-        <a href="https://github.com/fangyi-zhou/sii-decode-rs/issues">
+        <a href="https://github.com/ivsema/sii-decode-rs/issues">
           on GitHub
         </a>
         .
