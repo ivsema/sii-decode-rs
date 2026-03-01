@@ -38,7 +38,7 @@ useEffect(() => {
 
       const res = await fetch(`${BASE}/preparedBlocks/index.json`, {
         cache: "no-store",
-        signal: controller.signal,
+        signal: controller.signal
       });
 
       if (!res.ok) {
@@ -181,13 +181,13 @@ useEffect(() => {
 	
 	const validatePreparedBlock = (text: string): string | null => {
 	  // Ищем начало блока active_mods
-	  const headerMatch = text.match(/^active_mods:\s*\d+/m);
+	  const headerMatch = text.match(/active_mods:\s*\d+/m);
 	  if (!headerMatch) {
 		return "В шаблоне отсутствует строка 'active_mods: N'";
 	  }
 
 	  // Проверяем что есть хотя бы один элемент active_mods[i]
-	  const itemsMatch = text.match(/^\s*active_mods\[\d+\]:\s*".*?"$/m);
+	  const itemsMatch = text.match(/\s*active_mods\[\d+\]:\s*".*?"$/m);
 	  if (!itemsMatch) {
 		return "В шаблоне нет ни одной строки active_mods[i]";
 	  }

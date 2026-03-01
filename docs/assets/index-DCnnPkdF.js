@@ -7221,7 +7221,7 @@ function Qy() {
     return await il.text();
   }, $l = (V) => {
     var _a;
-    return V.match(/^active_mods:\s*\d+/m) ? V.match(/^\s*active_mods\[\d+\]:\s*".*?"$/m) ? ((_a = V.split(/\r?\n/).find((H) => H.trim().length > 0)) == null ? void 0 : _a.startsWith("active_mods:")) ? null : "\u0424\u0430\u0439\u043B \u0434\u043E\u043B\u0436\u0435\u043D \u043D\u0430\u0447\u0438\u043D\u0430\u0442\u044C\u0441\u044F \u0441 active_mods" : "\u0412 \u0448\u0430\u0431\u043B\u043E\u043D\u0435 \u043D\u0435\u0442 \u043D\u0438 \u043E\u0434\u043D\u043E\u0439 \u0441\u0442\u0440\u043E\u043A\u0438 active_mods[i]" : "\u0412 \u0448\u0430\u0431\u043B\u043E\u043D\u0435 \u043E\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442 \u0441\u0442\u0440\u043E\u043A\u0430 'active_mods: N'";
+    return V.match(/active_mods:\s*\d+/m) ? V.match(/\s*active_mods\[\d+\]:\s*".*?"$/m) ? ((_a = V.split(/\r?\n/).find((H) => H.trim().length > 0)) == null ? void 0 : _a.startsWith("active_mods:")) ? null : "\u0424\u0430\u0439\u043B \u0434\u043E\u043B\u0436\u0435\u043D \u043D\u0430\u0447\u0438\u043D\u0430\u0442\u044C\u0441\u044F \u0441 active_mods" : "\u0412 \u0448\u0430\u0431\u043B\u043E\u043D\u0435 \u043D\u0435\u0442 \u043D\u0438 \u043E\u0434\u043D\u043E\u0439 \u0441\u0442\u0440\u043E\u043A\u0438 active_mods[i]" : "\u0412 \u0448\u0430\u0431\u043B\u043E\u043D\u0435 \u043E\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442 \u0441\u0442\u0440\u043E\u043A\u0430 'active_mods: N'";
   }, Yl = async () => {
     if (!w || !E.trim()) return;
     const V = _l.find((Cl) => Cl.file === E);
