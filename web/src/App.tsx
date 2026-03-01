@@ -188,8 +188,8 @@ useEffect(() => {
 		});
 
 	  if (!res.ok) {
+	  	updateStatus(`Не возможно загрузить шаблон ${file}`, "error");
 		throw new Error(`Не возможно загрузить шаблон ${file}`);
-		updateStatus(`Не возможно загрузить шаблон ${file}`, "error");
 	  }
 
 	  return await res.text();
