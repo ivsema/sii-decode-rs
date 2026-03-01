@@ -46,8 +46,9 @@ const selectedTemplate =  preparedBlocks.find((b) => b.id === selectedTemplateId
     URL.revokeObjectURL(downloadRef.current.href);
     downloadRef.current.href = "#";
   }
+  if(file) updateStatus("Шаблон изменён. Требуется применение.");
 
-  updateStatus("Шаблон изменён. Требуется повторное применение.");
+  
 }, [selectedTemplateId]);
   
 useEffect(() => {
