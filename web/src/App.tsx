@@ -21,11 +21,10 @@ function App() {
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const workerRef = useRef<Worker | null>(null);
   const [preparedBlocks, setPreparedBlocks] = useState<PreparedBlockInfo[]>([]);
-  const [selectedBlockFile, setSelectedBlockFile] = useState<string>("");
+  //const [selectedBlockFile, setSelectedBlockFile] = useState<string>("");
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>("");
   
-  const selectedTemplate = preparedBlocks.find(
-  (b) => b.file === selectedBlockFile
-);
+const selectedTemplate =  preparedBlocks.find((b) => b.id === selectedTemplateId) ?? null;
 
   // Инициализация воркера
   useEffect(() => {
@@ -59,7 +58,7 @@ useEffect(() => {
       setPreparedBlocks(list);
 
       if (list.length > 0) {
-        setSelectedBlockFile(list[0].file);
+        setSelectedTemplateId(list[0].id);
       }
     } catch (err: any) {
       if (err.name === "AbortError") {
@@ -220,15 +219,9 @@ useEffect(() => {
 	};
 
   const handleCleanField = async () => {
-    if (!decodedText || !selectedBlockFile.trim()) return;
+    if (!decodedText || !selectedTemplate) return;
 
-    const selectedInfo = preparedBlocks.find(
-      (b) => b.file === selectedBlockFile
-    );
-    if (!selectedInfo) {
-      alert("Шаблон не найден");
-      return;
-    }
+
 	
     const profileMapPath = extractMapPath(decodedText);
 
@@ -237,21 +230,22 @@ useEffect(() => {
       return;
     }
 
-    if (profileMapPath !== selectedInfo.map_path) {
+    if (profileMapPath !== selectedTemplate.map_path) {
       alert(
-        `map_path не совпадает!\n\nПрофиль: ${profileMapPath}\nШаблон: ${selectedInfo.map_path}`
+        `map_path не совпадает!\n\nПрофиль: ${profileMapPath}\nШаблон: ${selectedTemplate.map_path}`
       );
       return;
     }
 
     // ✔ map_path совпал — можно применять
-    const preparedBlock = await loadPreparedBlock(selectedBlockFile);
+    const preparedBlock = await loadPreparedBlock(selectedTemplate.file);
 	
 	const validationError = validatePreparedBlock(preparedBlock);
 	if (validationError) {
 	  alert(`Ошибка preparedBlock:\n${validationError}`);
 	  return;
 	}
+
 	
 
 const newContent = decodedText
@@ -292,12 +286,12 @@ const newContent = decodedText
 		<div style={{ marginBottom: "10px" }}>
 		  <label>Шаблон active_mods: </label>
 		  <select
-			value={selectedBlockFile}
-			onChange={(e) => setSelectedBlockFile(e.target.value)}
+			value={selectedTemplateId}
+			onChange={(e) => setSelectedTemplateId(e.target.value)}
 			style={{ marginLeft: "10px" }}
 		  >
 			{preparedBlocks.map(b => (
-			  <option key={b.id} value={b.file}>
+			  <option key={b.id} value={b.id}>
 				{b.name}
 			  </option>
 			))}
