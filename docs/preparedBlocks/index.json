@@ -19,5 +19,12 @@
     "file": "ATS.txt",
     "map_path": "/map/usa.mbd",
     "description": "Карта с модами для ATS."
+  },
+  {
+    "id": "empty",
+    "name": "Пустой пресет",
+    "file": "empty.txt",
+    "map_path": "/map/europe.mbd",
+    "description": "Для тестов пресета без файла(должно выдать ошибку)."
   }
 ]
