@@ -25,6 +25,8 @@ function App() {
   const [statusType, setStatusType] = useState<"info" | "success" | "error">("info");
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>("");
   const [isReadyToDownload, setIsReadyToDownload] = useState(false);
+  const [presetLocked, setPresetLocked] = useState(false);
+  const [testMode, setTestMode] = useState(false);
   
 const selectedTemplate =  preparedBlocks.find((b) => b.id === selectedTemplateId) ?? null;
 
@@ -92,6 +94,45 @@ const selectedTemplate =  preparedBlocks.find((b) => b.id === selectedTemplateId
 		controller.abort(); // корректно отменяет первый вызов StrictMode
 	  };
 	}, []);
+	
+	
+	useEffect(() => {
+	  const params = new URLSearchParams(window.location.search);
+	  const presetFromUrl = params.get("preset");
+
+	  if (presetFromUrl) {
+
+		  // проверяем что такой пресет существует
+		  const found = preparedBlocks.find(
+			(b) => b.id === presetFromUrl
+		  );
+
+		  if (found) {
+			setSelectedTemplateId(found.id);
+			setPresetLocked(true);
+
+			updateStatus(
+			  `Пресет зафиксирован из ссылки:\n${found.name}`,
+			  "info"
+			);
+		  } else {
+			updateStatus(
+			  `Пресет "${presetFromUrl}" не найден`,
+			  "error"
+			);
+		}
+	}
+	const testParam = params.get("testmode");
+
+	if (testParam === "1" || testParam === "true") {
+		setTestMode(true);
+	} else {
+		setTestMode(false);
+	}
+		  
+	  
+	}, [preparedBlocks]);
+
 
 
 	const extractMapPath = (content: string): string | null => {
@@ -318,6 +359,7 @@ const newContent = decodedText
 		  <label>Шаблон active_mods: </label>
 		  <select
 			value={selectedTemplateId}
+			disabled={presetLocked}
 			onChange={(e) => setSelectedTemplateId(e.target.value)}
 			style={{ marginLeft: "10px" }}
 		  >
@@ -377,7 +419,7 @@ const newContent = decodedText
         data-testid="file-display"
         spellCheck="false"
         readOnly
-        style={{ marginTop: '10px', display: "none" }}
+        style={{ marginTop: '10px',  display: testMode ? "inline-block" : "none" }}
       />
 
       {/* Ссылка для скачивания */}
