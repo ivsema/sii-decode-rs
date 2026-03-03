@@ -36,62 +36,63 @@ const selectedTemplate =  preparedBlocks.find((b) => b.id === selectedTemplateId
     };
   }, []);
   
-  useEffect(() => {
-  if (!selectedTemplateId) return;
+	useEffect(() => {
+	  if (!selectedTemplateId) return;
 
-  // Это выполнится КАЖДЫЙ раз при изменении выбранного шаблона
-  setIsReadyToDownload(false);
+	  // Это выполнится КАЖДЫЙ раз при изменении выбранного шаблона
+	  setIsReadyToDownload(false);
 
-  if (downloadRef.current?.href && downloadRef.current.href !== "#") {
-    URL.revokeObjectURL(downloadRef.current.href);
-    downloadRef.current.href = "#";
-  }
-  if(file) updateStatus("Шаблон изменён. Требуется применение.");
+	  if (downloadRef.current?.href && downloadRef.current.href !== "#") {
+		URL.revokeObjectURL(downloadRef.current.href);
+		downloadRef.current.href = "#";
+	  }
+	  if(file) updateStatus("Шаблон изменён. Требуется применение.");
 
-  
-}, [selectedTemplateId]);
-  
-useEffect(() => {
-  const controller = new AbortController();
+	  
+	}, [selectedTemplateId]);
+	  
+	useEffect(() => {
+	  const controller = new AbortController();
 
-  const load = async () => {
-    try {
-		const url = new URL("preparedBlocks/index.json", document.baseURI);
+	  const load = async () => {
+		try {
+			const url = new URL("preparedBlocks/index.json", document.baseURI);
 
-		const res = await fetch(url, {
-		  cache: "no-store",
-		  signal: controller.signal
-		});
+			const res = await fetch(url, {
+			  cache: "no-store",
+			  signal: controller.signal
+			});
 
-      if (!res.ok) {
-        console.error("Failed to load index.json:", res.status);
-        return;
-      }
+		  if (!res.ok) {
+			console.error("Failed to load index.json:", res.status);
+			return;
+		  }
 
-      const list: PreparedBlockInfo[] = await res.json();
+		  const list: PreparedBlockInfo[] = await res.json();
 
-      console.log("Loaded preparedBlocks:", list);
+		  console.log("Loaded preparedBlocks:", list);
 
-      setPreparedBlocks(list);
+		  setPreparedBlocks(list);
 
-      if (list.length > 0) {
-        setSelectedTemplateId(list[0].id);
-      }
-    } catch (err: any) {
-      if (err.name === "AbortError") {
-        // это нормально при StrictMode
-        return;
-      }
-      console.error("Load error:", err);
-    }
-  };
+		  if (list.length > 0) {
+			setSelectedTemplateId(list[0].id);
+		  }
+		} catch (err: any) {
+		  if (err.name === "AbortError") {
+			// это нормально при StrictMode
+			return;
+		  }
+		  console.error("Load error:", err);
+		}
+	  };
 
-  load();
+	  load();
 
-  return () => {
-    controller.abort(); // корректно отменяет первый вызов StrictMode
-  };
-}, []);
+	  return () => {
+		controller.abort(); // корректно отменяет первый вызов StrictMode
+	  };
+	}, []);
+
 
 	const extractMapPath = (content: string): string | null => {
 	  const match = content.match(/map_path:\s*"([^"]+)"/);
@@ -300,7 +301,8 @@ const newContent = decodedText
 
   return (
     <>
-      <h1>SII Decode</h1>
+      <h1>Установщик модов для профиля ETS 2 и ATS</h1>
+	  
       
       {/* Загрузка файла */}
       <input
@@ -330,9 +332,8 @@ const newContent = decodedText
 		  <div
 			style={{
 			  marginTop: "6px",
-			  fontSize: "0.9em",
+			  fontSize: "1.1em",
 			  color: "#666",
-			  maxWidth: "500px",
 			}}
 		  >
 			{selectedTemplate.description}
@@ -359,7 +360,7 @@ const newContent = decodedText
 				: statusType === "success"
 				? "#1a7f37"
 				: "#333",
-			fontSize: "0.9em",
+			fontSize: "1.1em",
 			border: "1px solid #ddd",
 			whiteSpace: "pre-line"
 		  }}
@@ -376,7 +377,7 @@ const newContent = decodedText
         data-testid="file-display"
         spellCheck="false"
         readOnly
-        style={{ marginTop: '10px' }}
+        style={{ marginTop: '10px', display: "none" }}
       />
 
       {/* Ссылка для скачивания */}
