@@ -326,7 +326,7 @@ const newContent = decodedText
 
     // Обновляем отображение и ссылку на скачивание
     setDecodedText(newContent);
-	updateStatus('Моды успешно выставлены в профиль.\r\nПрофиль можно скачать по ссылке ниже', "success");
+	updateStatus('Моды успешно выставлены в профиль.\r\nПрофиль можно скачать по ссылке выше', "success");
     // Создаем новый Blob и URL
     const blob = new Blob([newContent], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -344,17 +344,26 @@ const newContent = decodedText
     <>
       <h1>Установщик модов для профиля ETS 2 и ATS</h1>
 	  
-      
-      {/* Загрузка файла */}
+	    <p>1. В игре создать, либо выбрать профиль для установки модов.</p>
+
+  <p>2. В настройке карьеры отключить синхронизацию с облаком стим(ее можно будет вернуть позднее).</p>
+
+  <p>3. Нажать продолжить карьеру,запуститься и нажать "система","выход."</p>
+
+  <p>4. В проводнике:</p>
+  <p><code>Документы/Euro Truck Simulator 2/profiles</code></p>
+  <p>сортировать по дате изменения (открыть самую новую папку с профилем)</p>
+  <p>загрузите файл profile.sii      {/* Загрузка файла */}
       <input
         type="file"
         accept=".sii"
         onChange={handleFile}
         style={{ marginBottom: '10px' }}
-      />
+      /></p>
 
-      {/* Ввод имени поля для удаления */}
-      <div style={{ marginTop: '20px' }}>
+  <p>5. Выбираем шаблон</p>
+  
+        <div style={{ marginTop: '20px' }}>
 		<div style={{ marginBottom: "10px" }}>
 		  <label>Шаблон active_mods: </label>
 		  <select
@@ -370,21 +379,64 @@ const newContent = decodedText
 			))}
 		  </select>
 		</div>
-		{selectedTemplate && (
-		  <div
-			style={{
-			  marginTop: "6px",
-			  fontSize: "1.1em",
-			  color: "#666",
-			}}
-		  >
-			{selectedTemplate.description}
-		  </div>
-		)}
-        <button onClick={handleCleanField} style={{ marginLeft: '10px' }}>
+		
+				<div
+		  style={{
+			marginTop: "15px",
+			padding: "8px 12px",
+			borderRadius: "6px",
+			background: "#f3f3f3",
+			color: "#333",
+			fontSize: "1.1em",
+			border: "1px solid #ddd",
+			whiteSpace: "pre-line"
+		  }}
+		>
+		  <strong>Описание: </strong>
+		
+		
+		{selectedTemplate && 		
+			selectedTemplate.description
+		 
+		}
+		</div>
+
+  <p>6. Нажимаем  {' '}       <button onClick={handleCleanField} style={{ marginLeft: '10px' }}>
           Применить
         </button>
-      </div>
+      </p>
+	  </div>
+
+  <p>7.{' '}  
+        {/* Ссылка для скачивания */}
+	  {!isReadyToDownload && <span> Проверьте "статус"</span>}
+        <a href="#" ref={downloadRef} data-testid="file-download"  
+		style={{
+		  display: isReadyToDownload ? "inline" : "none",
+		}}>
+          Скачать профиль
+        </a>
+  </p>
+
+  <p>8. Переименовываем скачанный файл в <code>profile.sii</code> (при необходимости)</p>
+
+  <p>9. Вставляем его с заменой в папку, откуда загружали на сайт файл profile.sii</p>
+
+  <p>10. Заходим в игру,в модификации,</p>
+
+  <p>11. Проверяем, что бы в активных модификациях (колонка справа) не было модов с красным вослицательным знаком.</p>
+
+  <p>12. Если всё в порядке, (красных модов нет),можно запускать игру.</p>
+
+  <p>13. При наличии "красных" модов справа, исправить вручную.</p>
+   
+  <p>14. Не забудьте вернуть синхронизацию профиля с облаком стим.</p>
+	  
+      
+
+
+
+
 		<div
 		  style={{
 			marginTop: "15px",
@@ -422,16 +474,7 @@ const newContent = decodedText
         style={{ marginTop: '10px',  display: testMode ? "inline-block" : "none" }}
       />
 
-      {/* Ссылка для скачивания */}
-	  
-      <div style={{ marginTop: '10px' }}>
-        <a href="#" ref={downloadRef} data-testid="file-download"  
-		style={{
-		  display: isReadyToDownload ? "inline" : "none",
-		}}>
-          Скачать профиль
-        </a>
-      </div>
+
       
       <p className="footer">
         Ваш профиль не загружается ни на какой сервер, все изменения выполяются в вашем браузере.
