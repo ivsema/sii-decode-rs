@@ -14,6 +14,13 @@
     "description": "Карта с модами."
   },
   {
+    "id": "ivsema_pack",
+    "name": "ivsema_pack",
+    "file": "ivsema_pack.txt",
+    "map_path": "/map/europe.mbd",
+    "description": "Карта с модами."
+  },
+  {
     "id": "ATS",
     "name": "ATS",
     "file": "ATS.txt",
