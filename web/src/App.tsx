@@ -351,7 +351,7 @@ const newContent = decodedText
   <p>3. Нажать продолжить карьеру,запуститься и нажать "система","выход."</p>
 
   <p>4. В проводнике:</p>
-  <p><code>Документы/Euro Truck Simulator 2/profiles</code></p>
+  <p><code>Документы/Euro Truck Simulator 2/profiles</code> или <code>Документы/American Truck Simulator/profiles</code></p>
   <p>сортировать по дате изменения (открыть самую новую папку с профилем)</p>
   <p>загрузите файл profile.sii      {/* Загрузка файла */}
       <input
