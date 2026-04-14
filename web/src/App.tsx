@@ -351,21 +351,24 @@ const newContent = decodedText
   <p>3. Нажать продолжить карьеру,запуститься и нажать "система","выход."</p>
 
   <p>4. В проводнике:</p>
-  <p><code>Документы/Euro Truck Simulator 2/profiles</code> или <code>Документы/American Truck Simulator/profiles</code></p>
-  <p>сортировать по дате изменения (открыть самую новую папку с профилем)</p>
-  <p>загрузите файл profile.sii      {/* Загрузка файла */}
+  <ul>
+  <li><p><code>Документы/Euro Truck Simulator 2/profiles</code> или <code>Документы/American Truck Simulator/profiles</code></p></li>
+  <li><p>сортировать по дате изменения (открыть самую новую папку с профилем)</p></li>
+  <li><p>загрузите файл profile.sii      {/* Загрузка файла */}
       <input
         type="file"
         accept=".sii"
         onChange={handleFile}
         style={{ marginBottom: '10px' }}
-      /></p>
+      /></p></li>
+  </ul>
 
   <p>5. Выбираем шаблон</p>
   
         <div style={{ marginTop: '20px' }}>
 		<div style={{ marginBottom: "10px" }}>
-		  <label>Шаблон active_mods: </label>
+		<ul>
+		  <li><label>Шаблон active_mods: </label>
 		  <select
 			value={selectedTemplateId}
 			disabled={presetLocked}
@@ -378,6 +381,8 @@ const newContent = decodedText
 			  </option>
 			))}
 		  </select>
+		  </li>
+		  </ul>
 		</div>
 		
 				<div
