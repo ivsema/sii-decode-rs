@@ -1,4 +1,25 @@
-[
+[  
+  {
+    "id": "QS_LIGHT",
+    "name": "ETS2 QUPER SERVER LIGHT COMBO | by AlfachLTU",
+    "file": "QS_LIGHT.txt",
+    "map_path": "/map/europe.mbd",
+    "description": "Данный порядок предназначен для игры на сервере: ETS2 QUPER SERVER LIGHT COMBO \n Автор порядка: AlfachLTU \n Требуются моды под сервер, можно скачать в дискорд сервере Quper Simulator \n Обновлен 17.04.2026"
+  },  
+  {
+    "id": "QS_MAIN",
+    "name": "ETS2 QUPER SERVER MAIN COMBO | by AlfachLTU",
+    "file": "QS_MAIN.txt",
+    "map_path": "/map/europe.mbd",
+    "description": "\nДанный порядок предназначен для игры на сервере: ETS2 QUPER SERVER MAIN COMBO \n Автор порядка: AlfachLTU \n Требуются моды под сервер, можно скачать в дискорд сервере Quper Simulator \n Обновлен 17.04.2026"
+  },  
+  {
+    "id": "QS_ATS",
+    "name": "ATS QUPER SERVER COMBO | by AlfachLTU",
+    "file": "QS_ATS.txt",
+    "map_path": "/map/usa.mbd",
+    "description": "Данный порядок предназначен для игры на сервере: ATS QUPER SERVER COMBO \n Автор порядка: AlfachLTU \n Требуются моды под сервер, можно скачать в дискорд сервере Quper Simulator \n Обновлен 17.04.2026"
+  },
   {
     "id": "default",
     "name": "Default Map",
@@ -26,13 +47,6 @@
     "file": "ATS.txt",
     "map_path": "/map/usa.mbd",
     "description": "Карта с модами для ATS."
-  },  
-  {
-    "id": "QS_light_sever_by_Alfach",
-    "name": "QS light sever by Alfach",
-    "file": "QS_light_sever_by_Alfach.txt",
-    "map_path": "/map/europe.mbd",
-    "description": "QS light sever by Alfach. Обновлен 17.04.2026"
   },
   {
     "id": "empty",
