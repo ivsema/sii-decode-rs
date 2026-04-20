@@ -1,6 +1,6 @@
  active_mods: 67
- active_mods[0]: "MAZ 6422 (1981) ETS2 v1.58.x|MAZ 6422 (1981) ETS2"
- active_mods[1]: "MAZ_5440E9_Prostor_v8.0|MAZ 5440E9 PROSTOR"
+ active_mods[0]: "MAZ_5440E9_Prostor_v8.0|MAZ 5440E9 PROSTOR"
+ active_mods[1]: "MAZ 6422 (1981) ETS2 v1.58.x|MAZ 6422 (1981) ETS2"
  active_mods[2]: "MAZ_5440_6430|MAZ-5340/5440/6430"
  active_mods[3]: "actros_mp2_151|Mercedes-Benz Actros MP2"
  active_mods[4]: "actros_mp3_151|Mercedes-Benz Actros MP3"
