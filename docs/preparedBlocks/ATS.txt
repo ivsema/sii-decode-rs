@@ -18,4 +18,4 @@ active_mods: 20
  active_mods[16]: "More American Cities (California - v1.9)|More American Cities (California)"
  active_mods[17]: "Sound Fixes Pack - ATS|Sound Fixes Pack 25.61"
  active_mods[18]: "ATS Realistic Brutal Graphics And Weather V9.9|ATS Realistic Brutal Graphics & Weather"
- active_mods[19]: "Steam_Inventory_Unlock|Steam Inventory Unlock"
+ active_mods[19]: "Steam|Steam Inventory Unlock"
