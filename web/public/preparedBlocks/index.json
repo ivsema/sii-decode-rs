@@ -56,6 +56,13 @@
     "description": "Карта с модами для ATS."
   },
   {
+    "id": "ATSPlus",
+    "name": "ATSPlus",
+    "file": "ATSPlus.txt",
+    "map_path": "/map/usa.mbd",
+    "description": "Карта с модами для ATS."
+  },
+  {
     "id": "empty",
     "name": "Пустой пресет",
     "file": "empty.txt",
