@@ -272,18 +272,39 @@ const selectedTemplate =  preparedBlocks.find((b) => b.id === selectedTemplateId
 		return "Файл не содержит данных";
 	  }
 
-	  // Проверяем заголовок active_mods (разрешаем пробелы в начале)
-	  if (!/^\s*active_mods:\s*\d+/.test(firstMeaningfulLine)) {
+	// Проверяем заголовок и извлекаем ожидаемое количество (N)
+	const headerMatch = firstMeaningfulLine.match(/^\s*active_mods:\s*(\d+)/);
+	if (!headerMatch) {
 		return "Первая содержательная строка должна быть 'active_mods: N'";
-	  }
+	}
+	  
 
-	  // Проверяем наличие элементов списка
-	  const hasItems = /^\s*active_mods\[\d+\]:\s*".*?"$/m.test(text);
-	  if (!hasItems) {
-		return "В шаблоне отсутствуют строки active_mods[i]";
-	  }
+	const expectedCount = parseInt(headerMatch[1], 10);
+	const actualIndices: number[] = [];
+	
+	// Регулярное выражение для извлечения индекса i
+	const regex = /^\s*active_mods\[(\d+)\]:\s*"[^"]*"\s*$/;
 
-	  return null;
+	for (const line of lines) {
+		const match = line.match(regex);
+		if (match) {
+		actualIndices.push(parseInt(match[1], 10));
+		}
+	}
+
+	// 1. Проверка общего количества
+	if (actualIndices.length !== expectedCount) {
+		return `Количество элементов active_mods[i] (${actualIndices.length}) не совпадает с указанным в заголовке (${expectedCount}). Обратитесь к автору пресета`;
+	}
+
+	// 2. Проверка строгого порядка (без сортировки)
+	for (let i = 0; i < expectedCount; i++) {
+		if (actualIndices[i] !== i) {
+		return `Нарушен строгий порядок нумерации: на позиции ${i} ожидается active_mods[${i}], но найден active_mods[${actualIndices[i]}]. Обратитесь к автору пресета`;
+		}
+	}
+
+	return null; // Ошибок не найдено
 	};
 
   const handleCleanField = async () => {
@@ -321,7 +342,7 @@ const selectedTemplate =  preparedBlocks.find((b) => b.id === selectedTemplateId
 const newContent = decodedText
 	.replace(
     /active_mods:\s*\d+[\r\n]+(?:\s*active_mods\[\d+\]:\s*".*?"[\r\n]+)*/g,
-    preparedBlock
+    preparedBlock.replace(/\r?\n/g, "\r\n").trim() + "\r\n"
   );
 
     // Обновляем отображение и ссылку на скачивание
